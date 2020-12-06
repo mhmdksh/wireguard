@@ -3,6 +3,18 @@
 # Secure WireGuard server installer for Debian, Ubuntu, CentOS, Fedora and Arch Linux
 # https://github.com/angristan/wireguard-install
 
+Home_DIR="$HOME/wireguard/clients"
+WorkingDirPrefix="/wireguard/clients"
+
+function checkHome()
+{ # A function to create the home directory
+
+  echo
+  echo "Creating the home directory"
+  echo
+  mkdir -p $Home_DIR
+}
+
 function isRoot() {
 	if [ "${EUID}" -ne 0 ]; then
 		echo "You need to run this script as root"
@@ -55,6 +67,7 @@ function initialCheck() {
 	isRoot
 	checkVirt
 	checkOS
+	checkHome
 }
 
 function installQuestions() {
@@ -276,11 +289,11 @@ function newClient() {
 
 	# Home directory of the user, where the client configuration will be written
 	if [ -e "/home/${CLIENT_NAME}" ]; then # if $1 is a user name
-		HOME_DIR="/home/${CLIENT_NAME}/wireguard/clients"
+		HOME_DIR="/home/${CLIENT_NAME}/${WorkingDirPrefix}"
 	elif [ "${SUDO_USER}" ]; then # if not, use SUDO_USER
-		HOME_DIR="/home/${SUDO_USER}/wireguard/clients"
+		HOME_DIR="/home/${SUDO_USER}/${WorkingDirPrefix}"
 	else # if not SUDO_USER, use /root
-		HOME_DIR="/root/wireguard/clients"
+		HOME_DIR="/root/${WorkingDirPrefix}"
 	fi
 
 	# Create client file and add the server as a peer
@@ -340,8 +353,8 @@ function revokeClient() {
 	sed -i "/^### Client ${CLIENT_NAME}\$/,/^$/d" "/etc/wireguard/${SERVER_WG_NIC}.conf"
 
 	# remove generated client files
-	rm -f "${HOME_DIR}/${SERVER_WG_NIC}-client-${CLIENT_NAME}.conf"
-	rm -f "${HOME_DIR}/${SERVER_WG_NIC}-qr-client-${CLIENT_NAME}.txt"
+	rm -f "${HOME_DIR}/${WorkingDirPrefix}/${SERVER_WG_NIC}-client-${CLIENT_NAME}.conf"
+	rm -f "${HOME_DIR}/${WorkingDirPrefix}/${SERVER_WG_NIC}-qr-client-${CLIENT_NAME}.txt"
 
 	# restart wireguard to apply changes
 	systemctl restart "wg-quick@${SERVER_WG_NIC}"
