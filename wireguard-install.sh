@@ -12,7 +12,7 @@ function checkHome()
   echo
   echo "Creating the home directory"
   echo
-  mkdir -p $Home_DIR
+  mkdir -p "$Home_DIR"
 }
 
 function isRoot() {
