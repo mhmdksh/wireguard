@@ -4,7 +4,7 @@ This script will automatically install and configure Wirguard VPN on your linux 
 Download and execute the script. Answer the questions asked by the script and it will take care of the rest.
 
 ```bash
-curl -O https://raw.githubusercontent.com/angristan/wireguard-install/master/wireguard-install.sh
+curl -O https://raw.githubusercontent.com/mhmdksh/wireguard/main/wireguard-install.sh
 chmod +x wireguard-install.sh
 ./wireguard-install.sh
 ```
